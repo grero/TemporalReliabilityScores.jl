@@ -1,0 +1,9 @@
+sudo: true
+language: julia
+addons:
+    apt:
+        update: true
+julia:
+      - release
+after_success:
+      - julia --project=. -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
