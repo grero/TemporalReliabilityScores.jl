@@ -1,5 +1,5 @@
 using TemporalReliabilityScores
-const TSR = TemporalReliabilityScores 
+const TSR = TemporalReliabilityScores
 using Test
 
 @testset "TREntropy" begin
