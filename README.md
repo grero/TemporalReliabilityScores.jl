@@ -8,4 +8,5 @@
 using TemporalReliabilityScores
 X = rand(0:2, 5,50)
 te = TemporalReliabilityScores.tr_entropy(X)
+ee = TemporalReliabilityScores.entropy(BitMatrix(X.>0.0))
 ```
