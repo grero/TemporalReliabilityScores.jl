@@ -18,15 +18,21 @@ end
 	idx4 = [2, 3, 1, 3, 5, 5, 4, 2, 2, 1, 1, 2, 2, 1, 1, 3, 4, 3, 2, 4]
 	X = falses(5,20)
 	ee = fill(0.0, 4)
+	eer = fill(0.0, 4)
 	for (kk,idx) in enumerate([idx1,idx2,idx3,idx4])
 		fill!(X, false)
 		for (ii,_idx) in enumerate(idx)
 			X[_idx,ii] = true
 		end
 		ee[kk] = TSR.entropy(X)
+		eer[kk] = TSR.renyientropy(X,2.0)
 	end
 	@test ee[1] ≈ -0.0
+	@test eer[1] ≈ -0.0
 	@test ee[2] ≈ 0.6108643020548935
+	@test eer[2] ≈ 0.5447271754416722
 	@test ee[3] ≈ 1.0549201679861442
+	@test eer[3] ≈ 1.021651247531981
 	@test ee[4] ≈ 1.5444795210968603
+	@test eer[4] ≈ 1.491654876777717
 end
