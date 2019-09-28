@@ -12,4 +12,11 @@ function tr_entropy(X::Matrix{T}) where T <: Real
 	entropy(pp)
 end
 
+function StatsBase.entropy(X::BitMatrix)
+	nb,nt = size(X)
+	bb = (2).^[0:nb-1;]
+	y = vec(bb'*X)
+	entropy([n/nt for n in values(StatsBase.countmap(y))])
+end
+
 end # module
