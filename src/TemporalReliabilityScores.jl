@@ -13,10 +13,19 @@ function tr_entropy(X::Matrix{T}) where T <: Real
 end
 
 function StatsBase.entropy(X::BitMatrix)
+	entropy(get_prob(X))
+end
+
+StatsBase.renyientropy(X::BitMatrix, α::Real) = renyientropy(get_prob(X), α)
+
+"""
+Get the probabilities of each row of `X`.
+"""
+function get_prob(X::BitMatrix)
 	nb,nt = size(X)
 	bb = (2).^[0:nb-1;]
 	y = vec(bb'*X)
-	entropy([n/nt for n in values(StatsBase.countmap(y))])
+	[n/nt for n in values(StatsBase.countmap(y))]
 end
 
 end # module
