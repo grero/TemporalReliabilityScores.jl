@@ -3,6 +3,13 @@ using Random
 const TSR = TemporalReliabilityScores
 using Test
 
+@testset "Test case" begin
+	RNG = MersenneTwister(1234)
+	X = TSR.test_case(RNG=RNG)
+	@test X[:,1] == [false, false, true, false, false]
+	@test dropdims(sum(X,dims=2),dims=2) == [2; 1; 19; 2; 2]
+end
+
 @testset "TREntropy" begin
 	X = permutedims(repeat([0 0 1 0], 10, 1), [2,1])
 	te = TSR.tr_entropy(X)
