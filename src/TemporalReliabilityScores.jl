@@ -1,4 +1,5 @@
 module TemporalReliabilityScores
+using Random
 using StatsBase
 
 function tr_entropy(X::Matrix{T}) where T <: Real
@@ -28,4 +29,24 @@ function get_prob(X::BitMatrix)
 	[n/nt for n in values(StatsBase.countmap(y))]
 end
 
+"""
+Compute the TREntropyScore for the rows of matrix `X`. The renyi entropy with parameter `
+α` is computed for the distribution of binary rows, and this is compared to a shuffled surrogates
+where for each trial the rows are shuffled randomly.
+"""
+function tr_entropy_score(X::BitMatrix, α::Real;nshuffles=1000,RNG=MersenneTwister(rand(UInt32)))
+	nbins, ntrials = size(X)
+	ee0 = 0.0
+	Xs = fill!(similar(X), false)
+	for i in 1:nshuffles
+		fill!(Xs, false)
+		for j in 1:ntrials
+			Xs[:,j] .= X[shuffle(RNG, 1:nbins), j]
+		end
+		ee0 += renyientropy(Xs,α)
+	end
+	ee0 /= nshuffles
+	ee1 = renyientropy(X,α)
+	ee1, ee0
+end
 end # module
