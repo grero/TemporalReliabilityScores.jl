@@ -36,17 +36,31 @@ where for each trial the rows are shuffled randomly.
 """
 function tr_entropy_score(X::BitMatrix, α::Real;nshuffles=1000,RNG=MersenneTwister(rand(UInt32)))
 	nbins, ntrials = size(X)
-	ee0 = 0.0
+	ee0 = fill(0.0, nshuffles)
 	Xs = fill!(similar(X), false)
 	for i in 1:nshuffles
 		fill!(Xs, false)
 		for j in 1:ntrials
 			Xs[:,j] .= X[shuffle(RNG, 1:nbins), j]
 		end
-		ee0 += renyientropy(Xs,α)
+		ee0[i] = renyientropy(Xs,α)
 	end
-	ee0 /= nshuffles
 	ee1 = renyientropy(X,α)
-	ee1, ee0
+	ii = searchsortedlast(sort(ee0), ee1)
+	ee1, ii
+end
+
+"""
+Generate a test care for temporal reliability, where `p` denotes the probability that a bin is active.
+"""
+function test_case(;p=[0.05,0.05,0.9,0.05,0.05],ntrials=20,RNG=MersenneTwister(rand(UInt32)))
+	nbins = length(p)
+	X = falses(nbins,ntrials)
+	for j in 1:ntrials
+		for i in 1:nbins
+			X[i,j] = rand(RNG) < p[i]
+		end
+	end
+	X
 end
 end # module
