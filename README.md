@@ -10,4 +10,5 @@ X = rand(0:2, 5,50)
 te = TemporalReliabilityScores.tr_entropy(X)
 ee = TemporalReliabilityScores.entropy(BitMatrix(X.>0.0))
 eer = TemporalReliabilityScores.renyientropy(BitMatrix(X.>0.0), 2.0)
+eer,ss = TemporalReliabilityScores.tr_entropy_score(BitMatrix(X.>0.0), 2.0)
 ```
