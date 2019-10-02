@@ -1,7 +1,7 @@
 name = "TemporalReliabilityScores"
 uuid = "7f59ec08-e101-11e9-23f0-33f1ad6c80eb"
 authors = ["Roger Herikstad <roger.herikstad@gmail.com>"]
-version = "0.5.0"
+version = "0.6.0"
 
 [deps]
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"

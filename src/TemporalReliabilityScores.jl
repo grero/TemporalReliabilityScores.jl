@@ -2,6 +2,30 @@ module TemporalReliabilityScores
 using Random
 using StatsBase
 
+struct TRSNullDistribution
+	ee::Vector{Float64}
+	α::Float64
+	nbins::Int64
+	ntrials::Int64
+	RNG::MersenneTwister
+end
+
+StatsBase.ecdf(X::TRSNullDistribution) = StatsBase.ecdf(X.ee)
+
+function TRSNullDistribution(X::BitMatrix, α::Float64, nshuffles::Int64, RNG::MersenneTwister=MersenneTwister(rand(UInt32)))
+	nbins, ntrials = size(X)
+	ee0 = fill(0.0, nshuffles)
+	Xs = fill!(similar(X), false)
+	for i in 1:nshuffles
+		fill!(Xs, false)
+		for j in 1:ntrials
+			Xs[:,j] .= X[shuffle(RNG, 1:nbins), j]
+		end
+		ee0[i] = renyientropy(Xs,α)
+	end
+	TRSNullDistribution(sort(ee0), α, nbins, ntrials, RNG)
+end
+
 function tr_entropy(X::Matrix{T}) where T <: Real
 	nbins,ntrials = size(X)
 	pp = fill(0.0, nbins)
@@ -36,18 +60,13 @@ where for each trial the rows are shuffled randomly.
 """
 function tr_entropy_score(X::BitMatrix, α::Real;nshuffles=1000,RNG=MersenneTwister(rand(UInt32)))
 	nbins, ntrials = size(X)
-	ee0 = fill(0.0, nshuffles)
-	Xs = fill!(similar(X), false)
-	for i in 1:nshuffles
-		fill!(Xs, false)
-		for j in 1:ntrials
-			Xs[:,j] .= X[shuffle(RNG, 1:nbins), j]
-		end
-		ee0[i] = renyientropy(Xs,α)
-	end
-	ee1 = renyientropy(X,α)
-	ii = searchsortedlast(sort(ee0), ee1)
-	ee1, ii/nshuffles
+	ee0 = TRSNullDistribution(X, α, nshuffles,RNG)
+	tr_entropy_score(X, ee0)
+end
+
+function tr_entropy_score(X::BitMatrix,ee0::TRSNullDistribution)
+	ee1 = renyientropy(X,ee0.α)
+	ee1, ecdf(ee0)(ee1)
 end
 
 """
