@@ -47,7 +47,7 @@ function tr_entropy_score(X::BitMatrix, α::Real;nshuffles=1000,RNG=MersenneTwis
 	end
 	ee1 = renyientropy(X,α)
 	ii = searchsortedlast(sort(ee0), ee1)
-	ee1, ii
+	ee1, ii/nshuffles
 end
 
 """
