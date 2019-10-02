@@ -1,4 +1,5 @@
 using TemporalReliabilityScores
+using Random
 const TSR = TemporalReliabilityScores
 using Test
 
@@ -35,4 +36,16 @@ end
 	@test eer[3] ≈ 1.021651247531981
 	@test ee[4] ≈ 1.5444795210968603
 	@test eer[4] ≈ 1.491654876777717
+end
+
+@testset "Temporal entropy score" begin
+	idx1 = fill(3,20)
+	idx2 = [3, 3, 3, 4, 4, 3, 3, 3, 3, 3, 3, 4, 4, 3, 4, 3, 4, 3, 3, 3]
+	X = falses(5,20)
+	for (ii, _idx) in enumerate(idx2)
+		X[_idx,ii] = true
+	end
+	ee1,ee0 = TSR.tr_entropy_score(X, 2.0;RNG=MersenneTwister(1234))
+	@test ee1 ≈ 0.5447271754416722
+	@test ee0 ≈ 1.436004650013498
 end
