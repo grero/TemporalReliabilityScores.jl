@@ -52,13 +52,25 @@ end
 end
 
 @testset "Temporal entropy score" begin
-	idx1 = fill(3,20)
-	idx2 = [3, 3, 3, 4, 4, 3, 3, 3, 3, 3, 3, 4, 4, 3, 4, 3, 4, 3, 3, 3]
-	X = falses(5,20)
-	for (ii, _idx) in enumerate(idx2)
-		X[_idx,ii] = true
-	end
-	ee1,ee0 = TSR.tr_entropy_score(X, 2.0;RNG=MersenneTwister(1234))
-	@test ee1 ≈ 0.5447271754416722
-	@test ee0 ≈ 1.436004650013498
+	RNG = MersenneTwister(1234)
+	X = TSR.test_case(RNG=RNG)
+	ee1,ii = TSR.tr_entropy_score(X, 2.0;RNG=RNG)
+	@test ee1 ≈ 0.809680996815897
+	@test ii == 0
+	X = TSR.test_case(p=[0.1,0.1,0.9,0.1,0.1],RNG=RNG)
+	ee1,ii = TSR.tr_entropy_score(X, 2.0;RNG=RNG)
+	@test ee1 ≈ 1.0788096613719298
+	@test ii == 0
+	X = TSR.test_case(p=[0.3,0.3,0.9,0.3,0.3],RNG=RNG)
+	ee1,ii = TSR.tr_entropy_score(X, 2.0;RNG=RNG)
+	@test ee1 ≈ 1.9661128563728327
+	@test ii == 1
+	X = TSR.test_case(p=[0.5,0.5,0.9,0.5,0.5],RNG=RNG)
+	ee1,ii = TSR.tr_entropy_score(X, 2.0;RNG=RNG)
+	@test ee1 ≈ 2.353878387381596
+	@test ii == 172
+	X = TSR.test_case(p=[0.7,0.7,0.9,0.7,0.7],RNG=RNG)
+	ee1,ii = TSR.tr_entropy_score(X, 2.0;RNG=RNG)
+	@test ee1 ≈ 1.7429693050586228
+	@test ii == 327
 end
