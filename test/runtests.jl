@@ -52,6 +52,7 @@ end
 end
 
 @testset "Temporal entropy score" begin
+	#check that successive randomness with more than one bin active is tracked by the score
 	RNG = MersenneTwister(1234)
 	X = TSR.test_case(RNG=RNG)
 	ee1,ii = TSR.tr_entropy_score(X, 2.0;RNG=RNG)
