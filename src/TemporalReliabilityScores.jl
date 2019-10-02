@@ -12,7 +12,7 @@ end
 
 StatsBase.ecdf(X::TRSNullDistribution) = StatsBase.ecdf(X.ee)
 
-function TRSNullDistribution(X::BitMatrix, α::Float64, nshuffles::Int64, RNG::MersenneTwister)
+function TRSNullDistribution(X::BitMatrix, α::Float64, nshuffles::Int64, RNG::MersenneTwister=MersenneTwister(rand(UInt32)))
 	nbins, ntrials = size(X)
 	ee0 = fill(0.0, nshuffles)
 	Xs = fill!(similar(X), false)
